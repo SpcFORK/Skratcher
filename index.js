@@ -1,8 +1,24 @@
 const { Client } = require("skribbler");
 
+opts = {
+  "name": "Skribbler!",
+  "lobbyCode": "SFCdFyR1",
+  // "httpHeaders": {
+  //   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+  //   "Accept": "*/*",
+  //   "Accept-Language": "en-US",
+  //   "Accept-Encoding": "gzip, deflate, br",
+  //   "Content-type": "application/x-www-form-urlencoded",
+  //   "Origin": "https://skribbl.io",
+  //   "Connection": "keep-alive",
+  //   "Referer": "https://skribbl.io/",
+  //   // "X-Forwarded-For": "50.100.26.142"
+  // }
+}
 
 class Shell {
-  constructor(client = new Client({ name: "Skratcher" })) {
+  constructor(client = new Client(opts)) {
+    
     this.client = client;
     this.client = Object.assign(this.client, this);
     
@@ -17,6 +33,7 @@ class Shell {
 
 var client = new Shell();
 
+var lobbywithoutMe = []
 
 var cbr = async (a, b, c) => {
   for (let line of a.split("\n")) {
@@ -42,6 +59,8 @@ CONNECTED = true;
 	console.log("Connected!");
 
   console.log(client.players, client);
+
+  lobbywithoutMe = client.players.filter(p => p.id != client.id);
 
   await new Promise(
     resolve => setTimeout(resolve, 1500)
@@ -112,7 +131,7 @@ var timer = async (t = 0) => {
     resolve => setTimeout(resolve, 1000)
   );
 
-  if (client.socket) client = new Shell();
+  if (!client.socket) client = new Shell();
   
   console.log("  -- Timer: %s", placeholder || GAMEDATA["timer"]);
 
@@ -251,7 +270,7 @@ Players:
 
     case "!masskick":
       
-      for (var i of client.players) {
+      for (var i of lobbywithoutMe) {
         client.votekick(i.id)
         console.log(i.id)
         await new Promise(r => setTimeout(r, 10000));
