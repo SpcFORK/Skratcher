@@ -5,6 +5,102 @@
 //     super();
 // }
 
+/** Structure of packets used for prop reflection
+  * * e.g. 
+      used to quickly construct a Packet object
+  * * 
+  */
+var schemas = {
+  
+  "msg": {
+    id: 0,
+    data: {
+      id: 0,
+      msg: ""
+    },
+  },
+
+  "clientjoin": {
+    id: 0,
+    data: {
+      settings: [],
+      id: '',
+      type: '',
+      me: '',
+      owner: '',
+      users: [],
+      round: 0,
+      state: { id: 0, time: 0, data: [] }
+    }
+  },
+
+  "match_end": {
+    id: 0,
+    data: {
+      id: 0,
+      time: 0,
+      data: []
+    }
+  },
+  
+  "join": {
+    id: 0,
+    data: {
+      id: 0,
+      name: '',
+      avatar: [],
+      score: 0,
+      guessed: false,
+      flags: 0
+    }
+  },
+
+  "kicked": {
+    reason: 0,
+    joinErr: 0
+  },
+
+  "left": {
+    id: 0,
+    data: {
+      id: 0, reason: 0 
+    } 
+  },
+
+  "prepare_for_words": {
+    id: 0,
+    data: {
+      id: 2, time: 2, data: 0 
+    } 
+  },
+
+  "round_done": {
+    id: 0,
+    data: {
+      id: 5,
+      time: 0,
+      data: { reason: 1, word: '', scores: [] }
+    }
+  },
+
+  "round_start": {
+    id: 10,
+    data: {
+      id: 4,
+      time: 0,
+      data: { id: 0, word: [], hints: [], drawCommands: [] }
+    }
+  }
+  
+  // "draw": {
+  //   id: 0,
+  //   data: []
+  // }
+  
+}
+
+
+
 function getAllKeys(obj, keys = new Set()) {
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
@@ -39,61 +135,6 @@ function hasSameKeyStructure(obj1, obj2) {
 function deepQuil(obj1, obj2, opts) {
   opts = opts || {};
 
-  
-}
-
-// Object.prototype.sameStructureAs = function(obj) {
-//   if (Object.keys(this).length !== Object.keys(obj).length) {
-//     return false;
-//   }
-
-//   if (Object.keys(this) != Object.keys(obj)) {
-//     return false;
-//   }
-
-//   return true;
-// };
-  
-var schemas = {
-  
-  "msg": {
-    id: 0,
-    data: {
-      id: 0,
-      msg: ""
-    },
-  },
-
-  "clientjoin": {
-    id: 0,
-    data: {
-      settings: [],
-      id: '',
-      type: '',
-      me: '',
-      owner: '',
-      users: [],
-      round: 0,
-      state: { id: 0, time: 0, data: [] }
-    }
-  },
-    
-  "join": {
-    id: 0,
-    data: {
-      id: 0,
-      name: '',
-      avatar: [],
-      score: 0,
-      guessed: false,
-      flags: 0
-    }
-  },
-
-  "draw": {
-    id: 0,
-    data: []
-  }
   
 }
 
@@ -138,52 +179,6 @@ class Message {
 }
 
 
-// function compareObjects(obj1, obj2) {
-//   // Helper function to check if the input is an object (excluding arrays)
-//   function isObject(obj) {
-//     return obj !== null && typeof obj === 'object' && !Array.isArray(obj);
-//   }
-
-//   // Check if both inputs are objects
-//   if (!isObject(obj1) || !isObject(obj2)) {
-//     return false;
-//   }
-
-//   // Get the keys of both objects
-//   const keys1 = Object.keys(obj1);
-//   const keys2 = Object.keys(obj2);
-
-//   // Check if they have the same number of keys
-//   if (keys1.length !== keys2.length) {
-//     return false;
-//   }
-
-//   // Check if all keys in obj1 are present in obj2 and vice versa
-//   if (!keys1.every(key => keys2.includes(key)) || !keys2.every(key => keys1.includes(key))) {
-//     return false;
-//   }
-
-//   // Recursively compare the values of corresponding keys
-//   for (const key of keys1) {
-//     const value1 = obj1[key];
-//     const value2 = obj2[key];
-
-//     // If both values are objects, recursively compare them
-//     if (isObject(value1) && isObject(value2)) {
-//       if (!compareObjects(value1, value2)) {
-//         return false;
-//       }
-//     }
-//     // If one of the values is not an object, compare their types
-//     else if (typeof value1 !== typeof value2) {
-//       return false;
-//     }
-//   }
-
-//   return true;
-// }
-
-
 
 class Packet {
   constructor(data) {
@@ -193,10 +188,10 @@ class Packet {
     // console.log(this.data);
     
     _do: for (var i in schemas) {
-      if (hasSameKeyStructure(schemas[i], this.data) && !this.data.data[0]) {
+      if (hasSameKeyStructure(schemas[i], this.data) && !this.data?.data?.[0]) {
         console.log(`
 -----${"-".repeat(i.length)}-${"-".repeat(`${this.data} `.length)}
-Got: ${i}, ${this.data}
+Got: ${i}, ${JSON.stringify(this.data, null, 2)}
 -----${"-".repeat(i.length)}-${"-".repeat(`${this.data} `.length)}
 `);
       }
