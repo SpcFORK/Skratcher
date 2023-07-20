@@ -36,11 +36,11 @@ function hasSameKeyStructure(obj1, obj2) {
   return true;
 }
 
-function deepQuil(obj1, obj2, opts) {
-  opts = opts || {};
+// function deepQuil(obj1, obj2, opts) {
+//   opts = opts || {};
 
   
-}
+// }
 
 // Object.prototype.sameStructureAs = function(obj) {
 //   if (Object.keys(this).length !== Object.keys(obj).length) {
