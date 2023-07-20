@@ -1,8 +1,9 @@
 const { Client } = require("skribbler");
+const unpacket = require("./unpacket.js");
 
 opts = {
-  "name": "Skribbler!",
-  "lobbyCode": "SFCdFyR1",
+  "name": "Skratcher!",
+  // "lobbyCode": "SFCdFyR1",
   // "httpHeaders": {
   //   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
   //   "Accept": "*/*",
@@ -142,14 +143,18 @@ var timer = async (t = 0) => {
 
 timer()
 
-client.gameData = async (data) => {
+client.on("packet", (data) => {
+  // console.log(data);
+  bfb = new unpacket(data);
 
+  // console.log(bfb);
+  
   if (
     data.id = 10
   ) {
 
-    if (data?.data?.time) {
-      GAMEDATA['timer'] = data.data.time;
+    if (data?.data?.time || data?.data?.state?.time) {
+      GAMEDATA['timer'] = data.data.time || data.data.state.time;
     }
     
     if (
@@ -229,7 +234,8 @@ client.gameData = async (data) => {
       console.log("\n-- Drawing ended! --\n");
     }, 3000);
   } else {
-    console.log(data)
+    // console.log(data);
+    console.log(bfb);
   }
 
   if (data?.reason == 1) {
@@ -237,7 +243,7 @@ client.gameData = async (data) => {
     CONNECTED = false;
   }
   
-}
+})
 
 // Send message with CLI
 
@@ -273,7 +279,7 @@ Players:
       for (var i of lobbywithoutMe) {
         client.votekick(i.id)
         console.log(i.id)
-        await new Promise(r => setTimeout(r, 10000));
+        await new Promise(r => setTimeout(r, 20000));
       }
       
       break;
